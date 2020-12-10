@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import AbilityCategory from './abilities/AbilityCategory';
+import AbilityCategory from './AbilityCategory';
 
 const abilityPointsByLevel = [5, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
 

@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
-import Navbar from './components/Navbar';
+import AttributeContainer from './attributes/AttributeContainer';
+import Abilities from './abilities/Abilities';
 import CharacterLevel from './components/CharacterLevel';
-import AttributeContainer from './components/AttributeContainer';
+import Navbar from './components/Navbar';
 import Talents from './components/Talents';
-import Abilities from './components/Abilities';
+import { getAttributePointsForLevel } from './models/Attributes';
 
 function App() {
     const [level, setLevel] = useState(1);
+
+    // a variable to track the number of available points awarded at any given level
+    const attributePoints = useMemo(() => getAttributePointsForLevel(level), [level]);
+    const [attributeLog, setAttributeLog] = useState([]);
 
     return (
         <div>
@@ -15,18 +20,25 @@ function App() {
                 < Navbar />
             </header>
             <div className="container-fluid">
-                <div className="col-4">
+                <div>
                     < CharacterLevel level={ level } setLevel={ setLevel }/>
                 </div>
-                <div className="row container-fluid my-3">
-                    <div className="col container border py-3 mr-2">
+                <div className="row container-fluid">
+                    <div className="col-md mx-2 my-3 px-2 py-3 border">
                         < Abilities level={ level } />
                     </div>
-                    <div className="col container border py-3 mx-2">
-                        < AttributeContainer level={ level } />
+                    <div className="col-md mx-2 my-3 px-2 py-3 border">
+                        < AttributeContainer points={ attributePoints } setAttributeLog={ setAttributeLog } />
                     </div>
-                    <div className="col container border py-3 ml-2">
+                    <div className="col-xl mx-2 my-3 px-2 py-3 border">
                         < Talents level={ level } />
+                    </div>
+                    <div>
+                        {
+                            attributeLog.map((entry, i) => (
+                                <p key={ i }>{ entry.name }</p>
+                            ))
+                        }
                     </div>
                 </div>
             </div>

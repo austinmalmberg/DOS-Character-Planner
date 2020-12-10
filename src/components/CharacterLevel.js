@@ -5,7 +5,7 @@ function CharacterLevel({ level, setLevel }) {
     const maxLevel = 20;
 
     return (
-        <div className="d-flex justify-content-between align-items-center text-center">
+        <div className="d-flex justify-content-between align-items-center text-center col-md-6 col-lg-4">
             <div className="col-8">
                 <h4>Character Level</h4>
                 <input
