@@ -1,8 +1,6 @@
 import React from 'react';
 
 function CharacterLevel({ level, setLevel }) {
-    const minLevel = 1;
-    const maxLevel = 20;
 
     return (
         <div className="d-flex justify-content-between align-items-center text-center col-md-6 col-lg-4">
@@ -11,10 +9,10 @@ function CharacterLevel({ level, setLevel }) {
                 <input
                     className="w-100"
                     type="range"
-                    min={ minLevel }
-                    max={ maxLevel }
-                    defaultValue={ level }
-                    onInput={ (e) => setLevel(Number(e.target.value)) }
+                    min={ 1 }
+                    max={ 20 }
+                    value={ level }
+                    onInput={ (event) => setLevel(Number(event.target.value)) }
                 />
             </div>
             <div className="col">

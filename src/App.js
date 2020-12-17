@@ -1,18 +1,21 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useReducer } from 'react';
 
-import AttributeContainer from './attributes/AttributeContainer';
-import Abilities from './abilities/Abilities';
-import CharacterLevel from './components/CharacterLevel';
 import Navbar from './components/Navbar';
-import Talents from './components/Talents';
-import { getAttributePointsForLevel } from './models/Attributes';
+import CharacterLevel from './components/CharacterLevel';
+
+import AttributeContainer from './components/AttributeContainer';
+
+import CharacterSummary from './components/CharacterSummary';
+
+function logReducer(logs, { key, log }) {
+    const updateLogs = { ...logs };
+    updateLogs[key] = log;
+    return updateLogs;
+}
 
 function App() {
     const [level, setLevel] = useState(1);
-
-    // a variable to track the number of available points awarded at any given level
-    const attributePoints = useMemo(() => getAttributePointsForLevel(level), [level]);
-    const [attributeLog, setAttributeLog] = useState([]);
+    const [logs, logsDispatcher] = useReducer(logReducer, {});
 
     return (
         <div>
@@ -21,25 +24,22 @@ function App() {
             </header>
             <div className="container-fluid">
                 <div>
-                    < CharacterLevel level={ level } setLevel={ setLevel }/>
+                    < CharacterLevel level={ level } setLevel={ setLevel } />
                 </div>
                 <div className="row container-fluid">
-                    <div className="col-md mx-2 my-3 px-2 py-3 border">
-                        < Abilities level={ level } />
-                    </div>
-                    <div className="col-md mx-2 my-3 px-2 py-3 border">
-                        < AttributeContainer points={ attributePoints } setAttributeLog={ setAttributeLog } />
-                    </div>
-                    <div className="col-xl mx-2 my-3 px-2 py-3 border">
-                        < Talents level={ level } />
-                    </div>
-                    <div>
-                        {
-                            attributeLog.map((entry, i) => (
-                                <p key={ i }>{ entry.name }</p>
-                            ))
-                        }
-                    </div>
+                    < AttributeContainer
+                        level={ level }
+                        logsDispatcher={ logsDispatcher } />
+                </div>
+                <div className="row container-fluid">
+                    {
+                        Object.entries(logs).map(([k, v]) => (
+                            <div key={ k }>
+                                <h4>{ k }</h4>
+                                <p>{ v.map(e => e.name).join(", ") }</p>
+                            </div>
+                        ))
+                    }
                 </div>
             </div>
         </div>
