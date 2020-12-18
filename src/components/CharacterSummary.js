@@ -1,11 +1,21 @@
-import React, { useReducer, useEffect } from 'react';
+import React from 'react';
+
+import WellSpacedContainer from './utils/WellSpacedContainer';
+import ContainerHeader from './utils/ContainerHeader';
 
 function CharacterSummary({ logs }) {
-
     return (
-        <div className="col-md mx-2 my-3 px-2 py-3 border">
-            <h2 className="text-center">Character Summary</h2>
-        </div>
+        <WellSpacedContainer classNames="h-100">
+            <ContainerHeader name={ "Summary" } />
+            {
+                Object.keys(logs).filter(key => logs[key].length > 0).map((logName, i) => (
+                    <div key={ i }>
+                        <h5>{ logName }</h5>
+                        <p>{ logs[logName].map(entry => entry.name).join(", ") }</p>
+                    </div>
+                ))
+            }
+        </WellSpacedContainer>
     );
 }
 

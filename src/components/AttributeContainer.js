@@ -1,18 +1,18 @@
-import React, { memo, useEffect, useReducer, useCallback, useState } from 'react';
+import React, { memo, useEffect, useReducer, useCallback, useContext } from 'react';
 
-import AttributeModel from '../models/Attributes';
+import AttributesModel from '../models/Attributes';
 
-import UpgradeComponent from './UpgradeComponent';
+import WellSpacedContainer from './utils/WellSpacedContainer';
 
-const STATE_ACTIONS = Object.freeze({
-    ADD_UPGRADE: 'add-upgrade',
-    REMOVE_UPGRADE: 'remove-upgrade',
-    POINTS_CHANGED: 'points-changed'
-});
+import { UpgradeContext, PointContext, UPGRADE_ACTIONS } from './upgrades/UpgradeUtils';
+import UpgradeContainerHeader from './upgrades/UpgradeContainerHeader';
+import UpgradeComponent from './upgrades/UpgradeComponent';
+
+import { LevelContext, UpdateLogContext } from './CharacterPlanner';
 
 const initialState = {
     /*
-    * An array of upgrade objects:
+    * An array of attribute objects:
     * {
     *    name: <string>,
     *    value: <Number>,
@@ -20,50 +20,53 @@ const initialState = {
     *    cost: <Number>
     * }
     */
-    upgrades: AttributeModel.defaults,
+    attributes: AttributesModel.attributes,
 
-    // An array for tracking upgrades
+    // An array for tracking attributes
     log: [],
 
     // An object for tracking points used
     points: {
         total: 0,
-        used: 0
+        used: 0,
     }
 };
 
 function stateReducer(state, { type, payload }) {
     let modifierFunction;
     switch (type) {
-        case STATE_ACTIONS.ADD_UPGRADE:
-            modifierFunction = addUpgrade;
-            break;
-        case STATE_ACTIONS.REMOVE_UPGRADE:
-            modifierFunction = removeUpgrade;
-            break;
-        case STATE_ACTIONS.POINTS_CHANGED:
-            // no need to modify the state if points do not change
-            if (state.points.used <= payload.totalPoints)
-                return state;
+        case UPGRADE_ACTIONS.ADD_UPGRADE:
+            return addUpgrade(state, payload);
+        case UPGRADE_ACTIONS.REMOVE_UPGRADE:
+            return removeUpgrade(state, payload);
+        case UPGRADE_ACTIONS.LEVEL_CHANGED:
+            // no need to modify the log and attribute values when points used <= total
+            if (state.points.used <= payload.total)
+                return {
+                    ...state,
+                    points: {
+                        ...state.points,
+                        total: payload.total
+                    }
+                };
 
-            modifierFunction = handleOverflow;
-            break;
+            // otherwise, remove log entries and update attribute values
+            return handleOverflow(state, payload);
         default:
             throw new Error('Upgrade state reducer error');
     }
-    return modifierFunction(state, payload);
 }
 
 function addUpgrade(state, { name, cost }) {
     return {
         ...state,
-        upgrades: state.upgrades.map(upgrade => {
-            if (upgrade.name === name)
-                return AttributeModel.handleUpgrade(upgrade);
-            return upgrade;
+        attributes: state.attributes.map(attribute => {
+            if (attribute.name === name)
+                return AttributesModel.handleUpgrade(attribute);
+            return attribute;
         }),
         points: { ...state.points, used: state.points.used + cost },
-        log: [ { name, cost }, ...state.log ]
+        log: [ ({ name, cost }), ...state.log ]
     };
 }
 
@@ -72,20 +75,20 @@ function removeUpgrade(state, { name }) {
 
     return {
         ...state,
-        upgrades: state.upgrades.map(upgrade => {
-            if (upgrade.name === name)
-                return AttributeModel.handleDowngrade(upgrade);
-            return upgrade;
+        attributes: state.attributes.map(attribute => {
+            if (attribute.name === name)
+                return AttributesModel.handleDowngrade(attribute);
+            return attribute;
         }),
         points: { ...state.points, used: state.points.used - state.log[matchingEntryIndex].cost },
         log: [...state.log.slice(0, matchingEntryIndex), ...state.log.slice(matchingEntryIndex + 1)]
     };
 }
 
-function handleOverflow(state, { totalPoints }) {
+function handleOverflow(state, { total }) {
     let count = 0;
     let removedCost = 0;
-    while (count < state.log.length && state.points.used - removedCost > totalPoints) {
+    while (count < state.log.length && state.points.used - removedCost > total) {
         removedCost += state.log[count++].cost;
     }
 
@@ -93,70 +96,58 @@ function handleOverflow(state, { totalPoints }) {
 
     return {
         ...state,
-        upgrades: state.upgrades.map(upgrade => {
-            const removeCount = removedEntries.filter(entry => entry.name === upgrade.name).length;
-            return { ...upgrade, value: upgrade.value - removeCount };
+        attributes: state.attributes.map(attribute => {
+            const removeCount = removedEntries.filter(entry => entry.name === attribute.name).length;
+            return { ...attribute, value: attribute.value - removeCount };
         }),
         points: {
             ...state.points,
+            total: total,
             used: state.points.used - removedCost
         },
         log: state.log.slice(count)
     };
 }
 
-function AttributeContainer({ level, logsDispatcher }) {
-    const [totalPoints, setTotalPoints] = useState(AttributeModel.pointsByLevel[level - 1]);
-    const [state, stateDispatcher] = useReducer(stateReducer, initialState);
+function AttributeContainer() {
+    const level = useContext(LevelContext);
+    const updateLog = useContext(UpdateLogContext);
+
+    const [state, dispatchState] = useReducer(stateReducer, initialState);
+
+    const upgradeContext = {
+        handleAddUpgrade: (upgrade) => dispatchState({ type: UPGRADE_ACTIONS.ADD_UPGRADE, payload: upgrade }),
+        handleRemoveUpgrade: (upgrade) => dispatchState({ type: UPGRADE_ACTIONS.REMOVE_UPGRADE, payload: upgrade }),
+    };
 
     useEffect(() => {
-        const newPoints = AttributeModel.pointsByLevel[level - 1];
-
-        setTotalPoints(newPoints);
-
-        stateDispatcher({
-            type: STATE_ACTIONS.POINTS_CHANGED,
+        dispatchState({
+            type: UPGRADE_ACTIONS.LEVEL_CHANGED,
             payload: {
-                totalPoints: newPoints
+                total: AttributesModel.pointsByLevel[level - 1]
             }
         });
-
     }, [level])
 
     useEffect(() => {
-        logsDispatcher({ key: AttributeModel.name, log: state.log });
-    }, [state.log, logsDispatcher]);
-
-    function handleAddUpgrade(upgrade) {
-        stateDispatcher({ type: STATE_ACTIONS.ADD_UPGRADE, payload: upgrade });
-    }
-
-    function handleRemoveUpgrade(upgrade) {
-        stateDispatcher({ type: STATE_ACTIONS.REMOVE_UPGRADE, payload: upgrade });
-    }
-
-    const isUpgradeAvailable = useCallback(pointsRequired =>
-        totalPoints - state.points.used >= pointsRequired, [totalPoints, state.points.used]);
+        updateLog(AttributesModel.name, state.log);
+    }, [state.log]);
 
     return (
-        <div className="col-md mx-2 my-3 px-2 py-3 border">
-            <div className="text-center">
-                <h2>{ AttributeModel.name }</h2>
-                <h4>Available: { totalPoints - state.points.used }</h4>
-            </div>
-            <div className="container">
-                {
-                    state.upgrades.map((upgrade) => (
-                        < UpgradeComponent
-                            key={ upgrade.name }
-                            upgrade={ upgrade }
-                            isUpgradeAvailable={ isUpgradeAvailable }
-                            handleAddUpgrade={ handleAddUpgrade }
-                            handleRemoveUpgrade={ handleRemoveUpgrade } />
-                    ))
-                }
-            </div>
-        </div>
+        <WellSpacedContainer classNames="col-md mr-md-2">
+            <UpgradeContext.Provider value={ upgradeContext }>
+                <PointContext.Provider value={ state.points }>
+                    <UpgradeContainerHeader name={ AttributesModel.name } points={ state.points.total - state.points.used } />
+                    {
+                        state.attributes.map((attribute, i) => (
+                            < UpgradeComponent
+                                key={ i }
+                                upgrade={ attribute } />
+                        ))
+                    }
+                </PointContext.Provider>
+            </UpgradeContext.Provider>
+        </WellSpacedContainer>
     );
 }
 

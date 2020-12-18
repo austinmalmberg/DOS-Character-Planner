@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-function CharacterLevel({ level, setLevel }) {
+import { LevelContext } from './CharacterPlanner';
+
+function CharacterLevel({ setLevel }) {
+    const level = useContext(LevelContext);
 
     return (
-        <div className="d-flex justify-content-between align-items-center text-center col-md-6 col-lg-4">
+        <div className="d-flex justify-content-between align-items-center text-center">
             <div className="col-8">
                 <h4>Character Level</h4>
                 <input

@@ -1,8 +1,8 @@
 
 const LOG_ACTIONS = {
-    ADD_UPGRADE: 0,
-    REMOVE_ENTRIES: 1,
-    REMOVE_FIRST: 2
+    ADD_UPGRADE: 'add-upgrade',
+    REMOVE_ENTRIES: 'remove-entries',
+    REMOVE_FIRST: 'remove-first-entry'
 };
 
 function logReducer(log, { type, payload }) {
