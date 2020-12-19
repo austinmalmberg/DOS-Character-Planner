@@ -1,11 +1,11 @@
 import React from 'react';
 
-import WellSpacedContainer from './utils/WellSpacedContainer';
+import Container from './utils/Container';
 import ContainerHeader from './utils/ContainerHeader';
 
 function CharacterSummary({ logs }) {
     return (
-        <WellSpacedContainer classNames="h-100">
+        <Container classNames="h-100">
             <ContainerHeader name={ "Summary" } />
             {
                 Object.keys(logs).filter(key => logs[key].length > 0).map((logName, i) => (
@@ -15,7 +15,7 @@ function CharacterSummary({ logs }) {
                     </div>
                 ))
             }
-        </WellSpacedContainer>
+        </Container>
     );
 }
 

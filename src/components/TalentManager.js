@@ -1,22 +1,12 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 
-import TalentsModel from '../models/Talents';
+import Model from '../models/Talents';
 
-import WellSpacedContainer from './utils/WellSpacedContainer';
+import Container from './utils/Container';
 import UpgradeContainerHeader from './upgrades/UpgradeContainerHeader';
+import { PointContext, initialUpgradeManagerState } from './upgrades/UpgradeUtils';
 
 import { LevelContext, UpdateLogContext } from './CharacterPlanner';
-
-const initialState = {
-    talents: TalentsModel.defaults,
-
-    log: [],
-
-    points: {
-        total: 0,
-        used: 0
-    }
-};
 
 const STATE_ACTIONS = Object.freeze({
     SELECT_TALENT: 'select-talent',
@@ -26,10 +16,9 @@ const STATE_ACTIONS = Object.freeze({
 function stateReducer(state, { type, payload }) {
     switch(type) {
         case STATE_ACTIONS.SELECT_TALENT:
-
+            break;
         case STATE_ACTIONS.DESELECT_TALENT:
-
-
+            break;
         case STATE_ACTIONS.LEVEL_CHANGED:
             return {
                 ...state,
@@ -39,27 +28,27 @@ function stateReducer(state, { type, payload }) {
                 }
             };
         default:
-            throw Error('No state type ' + type + ' for TalentContainer stateReducer');
+            throw Error('No state type ' + type + ' for TalentManager stateReducer');
     }
 }
 
-function TalentContainer() {
+function TalentManager() {
     const level = useContext(LevelContext);
     const updateLog = useContext(UpdateLogContext);
 
-    const [state, stateDispatch] = useReducer(stateReducer, initialState);
+    const [state, stateDispatch] = useReducer(stateReducer, initialUpgradeManagerState);
 
     useEffect(() => {
         stateDispatch({
             type: STATE_ACTIONS.LEVEL_CHANGED,
             payload: {
-                total: TalentsModel.pointsByLevel[level - 1]
+                total: Model.pointsByLevel[level - 1]
             }
         });
     }, [level]);
 
     useEffect(() => {
-        updateLog(TalentsModel.name, state.log);
+        updateLog(Model.name, state.log);
     }, [state.log]);
 
     function handleSelectTalent(talent) {
@@ -77,17 +66,19 @@ function TalentContainer() {
     }
 
     return (
-        <WellSpacedContainer classNames="col-md ml-md-2 mb-md-0">
-            <UpgradeContainerHeader name={ TalentsModel.name } points={ state.points.total - state.points.used } />
-            <div className="overflow-auto">
-                {
-                    state.talents.map((talent, i) => (
-                        <p key={ i } className="m-0">{ talent.name }</p>
-                    ))
-                }
-            </div>
-        </WellSpacedContainer>
+        <Container classNames="col-md ml-md-2 mb-md-0">
+            <PointContext.Provider value={ state.points }>
+                <UpgradeContainerHeader name={ Model.name } />
+                <div className="overflow-auto">
+                    {
+                        Model.talents.map((talent, i) => (
+                            <p key={ i } className="m-0">{ talent.name }</p>
+                        ))
+                    }
+                </div>
+            </PointContext.Provider>
+        </Container>
     );
 }
 
-export default TalentContainer;
+export default TalentManager;

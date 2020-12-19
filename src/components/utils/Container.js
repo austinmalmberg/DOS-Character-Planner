@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WellSpacedContainer({ classNames, children }) {
+function Container({ classNames, children }) {
     return (
         <div className={ ["p-3 border", classNames].join(' ').trim() }>
             { children }
@@ -8,4 +8,4 @@ function WellSpacedContainer({ classNames, children }) {
     );
 }
 
-export default WellSpacedContainer;
+export default Container;

@@ -19,4 +19,15 @@ const UPGRADE_ACTIONS = Object.freeze({
     LEVEL_CHANGED: 'level-changed'
 });
 
-export { UpgradeContext, PointContext, UPGRADE_ACTIONS };
+const initialUpgradeManagerState = {
+    // An array for tracking attributes
+    log: [],
+
+    // An object for tracking points used
+    points: {
+        total: 0,
+        used: 0,
+    }
+};
+
+export { UpgradeContext, PointContext, UPGRADE_ACTIONS, initialUpgradeManagerState };

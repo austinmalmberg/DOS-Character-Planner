@@ -1,9 +1,9 @@
 import React, { useReducer } from 'react';
 
-import AbilitiesContainer from './AbilitiesContainer';
-import AttributeContainer from './AttributeContainer';
-import TalentContainer from './TalentContainer';
-import SkillsContainer from './SkillsContainer';
+import AbilityManager from './AbilityManager';
+import AttributeManager from './AttributeManager';
+import TalentManager from './TalentManager';
+import SkillManager from './SkillManager';
 import CharacterSummary from './CharacterSummary';
 
 const initialState = {
@@ -54,16 +54,16 @@ function CharacterPlanner() {
             <UpdateLogContext.Provider value={handleUpdateLog}>
                 <div className="container-fluid flex-grow-1">
                     <div className="row h-100 py-3">
-                        <div className="col-lg-4 col-xl-3">
-                            <AbilitiesContainer />
+                        <div className="col-lg-4 col-xl-3 pb-3 pb-lg-0">
+                            <AbilityManager />
                         </div>
                         <div className="col-lg-8 col-xl-6">
                             <div className="row">
-                                <AttributeContainer />
-                                <TalentContainer />
+                                <AttributeManager />
+                                <TalentManager />
                             </div>
-                            <div className="row h-auto">
-                                <SkillsContainer />
+                            <div className="row my-3">
+                                <SkillManager />
                             </div>
                         </div>
                         <div className="col-xl-3">

@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 
 import { UpgradeContext, PointContext } from './UpgradeUtils';
 
-function UpgradeComponent({ upgrade }) {
+function UpgradeComponent({ upgrade, upgradeBehavior, parentCallback }) {
     const { handleAddUpgrade, handleRemoveUpgrade } = useContext(UpgradeContext);
     const points = useContext(PointContext);
 
@@ -10,24 +10,20 @@ function UpgradeComponent({ upgrade }) {
 
     function onUpgrade() {
         handleAddUpgrade(state);
-        setState(state => ({
-            ...state,
-            value: state.value + 1
-        }));
+        setState(state => upgradeBehavior.onUpgrade(state));
+        if (parentCallback) parentCallback(upgradeBehavior.upgradeDiff);
     }
 
     function onDowngrade() {
-        handleAddUpgrade(state);
-        setState(state => ({
-            ...state,
-            value: state.value - 1
-        }));
+        handleRemoveUpgrade(state);
+        setState(state => upgradeBehavior.onDowngrade(state));
+        if (parentCallback) parentCallback(upgradeBehavior.downgradeDiff);
     }
 
     const isPlusDisabled = state.cost > points.total - points.used || (state.max && state.value >= state.max);
     const isMinusDisabled = state.value <= state.min;
 
-    console.log(points);
+
 
     return (
         <div className="row d-flex justify-content-between align-items-center py-1 mx-3">

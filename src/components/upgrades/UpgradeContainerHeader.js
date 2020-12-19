@@ -1,9 +1,15 @@
+import { useContext } from 'react';
+
 import ContainerHeader from '../utils/ContainerHeader';
 
-function UpgradeContainerHeader({ name, points }) {
+import { PointContext } from './UpgradeUtils';
+
+function UpgradeContainerHeader({ name }) {
+    const points = useContext(PointContext);
+    
     return (
         <ContainerHeader name={ name }>
-            <h5>Available: { points }</h5>
+            <h5>Available: { points.total - points.used }</h5>
         </ContainerHeader>
     );
 }
