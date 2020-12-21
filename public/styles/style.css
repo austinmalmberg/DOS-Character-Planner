@@ -1,4 +1,16 @@
 
-img[disabled] {
+div.spell {
+    border: 2px solid transparent;
+}
+
+div.spell--container[disabled] img {
     filter: grayscale(100%);
+}
+
+div.spell--container:not([disabled]) div.spell:hover {
+    border: 2px solid var(--yellow);
+}
+
+div.spell.selected {
+    border: 2px solid var(--yellow);
 }

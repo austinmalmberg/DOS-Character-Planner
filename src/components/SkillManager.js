@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
-import Model from '../models/Skills';
+import { SkillPointContext } from './CharacterPlanner';
 
-import Container from './utils/Container';
-import ContainerHeader from './utils/ContainerHeader';
+import SpellLevelContainer from './SpellLevelContainer';
 
-const initialState = {
-    schools: Model.schools,
+function SkillManager({ index, skill }) {
+    const skillPoints = useContext(SkillPointContext);
 
-}
-
-function SkillManager() {
-    const [state, setState] = useState(initialState);
-
-    const style = {
-        // filter: 'grayscale(100%)'
-    }
+    // const [state, setState] = useReducer({
+    //     skill,
+    //
+    // });
 
     return (
-        <Container classNames="w-100">
-            <ContainerHeader name={ "Skills" } />
-            <img disabled={ false } src={'./images/avatar_of_storms.png'} />
-        </Container>
+        <div className="skill--container mt-3 text-center" disabled={ skill.disabled }>
+            <h5>{ skill.name }</h5>
+            <div>
+                {
+                    Object.entries(skill.spells).map(([level, spells]) =>
+                        <SpellLevelContainer level={ level } spells={ spells } />
+                    )
+                }
+            </div>
+        </div>
     );
 }
 
