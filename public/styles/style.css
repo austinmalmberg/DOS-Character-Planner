@@ -3,7 +3,7 @@ div.spell {
     border: 2px solid transparent;
 }
 
-div.spell--container[disabled] img {
+div.skill[disabled] img {
     filter: grayscale(100%);
 }
 

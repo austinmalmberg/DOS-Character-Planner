@@ -5,7 +5,7 @@ import { initialSkillsState } from '../models/Skills';
 import AbilityManager from './AbilityManager';
 import AttributeManager from './AttributeManager';
 import TalentManager from './TalentManager';
-import SkillsContainer from './SkillsContainer';
+import SkillManager from './SkillManager';
 import CharacterSummary from './CharacterSummary';
 
 const initialState = {
@@ -81,7 +81,7 @@ function CharacterPlanner() {
                                     <TalentManager />
                                 </div>
                                 <div className="row my-3">
-                                    <SkillsContainer />
+                                    <SkillManager />
                                 </div>
                             </div>
                             <div className="col-xl-3">
