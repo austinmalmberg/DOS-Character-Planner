@@ -1,29 +1,28 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
-import { SkillPointContext } from './CharacterPlanner';
+import Model from '../models/Skills';
 
-import SpellLevelContainer from './SpellLevelContainer';
+import Container from './utils/Container';
+import ContainerHeader from './utils/ContainerHeader';
 
-function SkillManager({ index, skill }) {
-    const skillPoints = useContext(SkillPointContext);
+import SkillListGroup from './SkillListGroup';
 
-    // const [state, setState] = useReducer({
-    //     skill,
-    //
-    // });
+const SpellBehaviorContext = React.createContext();
 
+function SkillManager() {
     return (
-        <div className="skill--container mt-3 text-center" disabled={ skill.disabled }>
-            <h5>{ skill.name }</h5>
-            <div>
+        <Container classNames="w-100">
+            <ContainerHeader name={ "Skills" } />
+            <SpellBehaviorContext.Provider value={Model.spellBehavior}>
                 {
-                    Object.entries(skill.spells).map(([level, spells], i) =>
-                        <SpellLevelContainer key={ i } level={ level } spells={ spells } />
-                    )
+                    Model.skills.map((skill, i) => (
+                        <SkillListGroup skill={ skill } />
+                    ))
                 }
-            </div>
-        </div>
+            </SpellBehaviorContext.Provider>
+        </Container>
     );
 }
 
 export default SkillManager;
+export { SpellBehaviorContext };

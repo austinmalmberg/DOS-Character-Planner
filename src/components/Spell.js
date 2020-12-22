@@ -1,11 +1,12 @@
 import { useState, useContext } from 'react';
 
 import { SkillPointContext } from './CharacterPlanner';
-import { SpellBehaviorContext } from './SkillsContainer';
+import { SpellBehaviorContext } from './SkillManager';
 
 function Spell({ spell }) {
     const spellPointContext = useContext(SkillPointContext);
     const spellBehavior = useContext(SpellBehaviorContext);
+    
     const [state, setState] = useState(spell);
 
     function handleOnClick() {
