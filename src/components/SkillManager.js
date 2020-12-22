@@ -17,8 +17,8 @@ function SkillManager({ index, skill }) {
             <h5>{ skill.name }</h5>
             <div>
                 {
-                    Object.entries(skill.spells).map(([level, spells]) =>
-                        <SpellLevelContainer level={ level } spells={ spells } />
+                    Object.entries(skill.spells).map(([level, spells], i) =>
+                        <SpellLevelContainer key={ i } level={ level } spells={ spells } />
                     )
                 }
             </div>

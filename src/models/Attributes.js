@@ -1,4 +1,13 @@
 
+const ATTRIBUTE_NAMES = Object.freeze({
+    STRENGTH: 'Strength',
+    DEXTERITY: 'Dexterity',
+    INTELLIGENCE: 'Intelligence',
+    CONSTITUTION: 'Constitution',
+    SPEED: 'Speed',
+    PERCEPTION: 'Perception'
+});
+
 const defaultAttribute = {
     name: 'Default attribute',
     description: 'Default description',
@@ -45,3 +54,4 @@ const AttributesModel = {
 };
 
 export default AttributesModel;
+export { ATTRIBUTE_NAMES }

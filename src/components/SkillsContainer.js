@@ -16,7 +16,7 @@ function SkillsContainer() {
             <SpellBehaviorContext.Provider value={Model.spellBehavior}>
                 {
                     Model.skills.map((skill, i) =>
-                        <SkillManager index={ i } skill={ skill } / >
+                        <SkillManager key={ i } index={ i } skill={ skill } / >
                     )
                 }
             </SpellBehaviorContext.Provider>

@@ -9,21 +9,21 @@ function UpgradeComponent({ upgrade, upgradeBehavior, parentCallback }) {
     const [state, setState] = useState(upgrade);
 
     function onUpgrade() {
-        handleAddUpgrade(state);
-        setState(state => upgradeBehavior.onUpgrade(state));
-        if (parentCallback) parentCallback(upgradeBehavior.upgradeDiff);
+        const newState = upgradeBehavior.onUpgrade(state);
+        handleAddUpgrade(newState);
+        setState(newState);
+        if (parentCallback) parentCallback(newState);
     }
 
     function onDowngrade() {
-        handleRemoveUpgrade(state);
-        setState(state => upgradeBehavior.onDowngrade(state));
-        if (parentCallback) parentCallback(upgradeBehavior.downgradeDiff);
+        const newState = upgradeBehavior.onDowngrade(state);
+        handleRemoveUpgrade(newState);
+        setState(newState);
+        if (parentCallback) parentCallback(newState);
     }
 
     const isPlusDisabled = state.cost > points.total - points.used || (state.max && state.value >= state.max);
     const isMinusDisabled = state.value <= state.min;
-
-
 
     return (
         <div className="row d-flex justify-content-between align-items-center py-1 mx-3">

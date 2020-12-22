@@ -73,16 +73,20 @@ function rollbackLog(state, { total }) {
     };
 }
 
-function AttributeManager() {
+function AttributeManager({ updateAttributes }) {
     const level = useContext(LevelContext);
     const updateLog = useContext(UpdateLogContext);
 
     const [state, dispatchState] = useReducer(stateReducer, initialUpgradeManagerState);
 
     const upgradeContext = {
-        handleAddUpgrade: (upgrade) => dispatchState({ type: UPGRADE_ACTIONS.ADD_UPGRADE, payload: upgrade }),
-        handleRemoveUpgrade: (upgrade) => dispatchState({ type: UPGRADE_ACTIONS.REMOVE_UPGRADE, payload: upgrade }),
+        handleAddUpgrade: (attribute) => dispatchState({ type: UPGRADE_ACTIONS.ADD_UPGRADE, payload: attribute }),
+        handleRemoveUpgrade: (attribute) => dispatchState({ type: UPGRADE_ACTIONS.REMOVE_UPGRADE, payload: attribute }),
     };
+
+    function attributeModified(attribute) {
+        updateAttributes(attribute);
+    }
 
     useEffect(() => {
         dispatchState({
@@ -107,7 +111,8 @@ function AttributeManager() {
                             < UpgradeComponent
                                 key={ i }
                                 upgrade={ attribute }
-                                upgradeBehavior={ Model.behavior }/>
+                                upgradeBehavior={ Model.behavior }
+                                parentCallback={ attributeModified }/>
                         ))
                     }
                 </PointContext.Provider>

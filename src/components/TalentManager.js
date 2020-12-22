@@ -7,6 +7,11 @@ import UpgradeContainerHeader from './upgrades/UpgradeContainerHeader';
 import { PointContext, initialUpgradeManagerState } from './upgrades/UpgradeUtils';
 
 import { LevelContext, UpdateLogContext } from './CharacterPlanner';
+import Talent from './Talent';
+
+const initialState = {
+    ...initialUpgradeManagerState,
+}
 
 const STATE_ACTIONS = Object.freeze({
     SELECT_TALENT: 'select-talent',
@@ -36,7 +41,7 @@ function TalentManager() {
     const level = useContext(LevelContext);
     const updateLog = useContext(UpdateLogContext);
 
-    const [state, stateDispatch] = useReducer(stateReducer, initialUpgradeManagerState);
+    const [state, stateDispatch] = useReducer(stateReducer, initialState);
 
     useEffect(() => {
         stateDispatch({
@@ -69,10 +74,10 @@ function TalentManager() {
         <Container classNames="col-md ml-md-2 mb-md-0">
             <PointContext.Provider value={ state.points }>
                 <UpgradeContainerHeader name={ Model.name } />
-                <div className="overflow-auto">
+                <div className="mx-3 overflow-auto">
                     {
                         Model.talents.map((talent, i) => (
-                            <p key={ i } className="m-0">{ talent.name }</p>
+                            <Talent key={ i } talent={ talent } behavior={ Model.talentBehavior } />
                         ))
                     }
                 </div>
