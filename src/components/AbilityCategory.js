@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+
+import Model from '../models/Abilities';
+
+import { AbilityContext } from './CharacterPlanner';
 
 import UpgradeComponent from './upgrades/UpgradeComponent';
 
 
-function AbilityCategory({ category, abilities, upgradeBehavior }) {
-    const [totalPoints, setTotalPoints] = useState(0);
+function AbilityCategory({ categoryName, availablePoints, dispatch }) {
+    const abilityValues = useContext(AbilityContext);
 
-    function pointsChanged({ value }) {
-        setTotalPoints(totalPoints => totalPoints + value);
-    }
+    const abilities = Model.abilities[categoryName];
+
+    const categoryPoints = abilities.reduce((total, ability) => total + abilityValues[ability.name], 0);
 
     return (
         <div className="list-group list-group-flush">
@@ -16,21 +20,24 @@ function AbilityCategory({ category, abilities, upgradeBehavior }) {
                 <a
                     className="btn d-flex justify-content-between align-items-center bg-primary text-light py-2 px-3"
                     data-toggle="collapse"
-                    href={ "#" + category.toLowerCase() }
+                    href={ "#" + categoryName.toLowerCase() }
                     role="button"
                     aria-expanded="true"
-                    aria-controls={ category.toLowerCase() }>
-                    <h5 className="m-0">{ category }</h5>
-                    <span>{ totalPoints }</span>
+                    aria-controls={ categoryName.toLowerCase() }>
+                    <h5 className="m-0">{ categoryName }</h5>
+                    <span>{ categoryPoints }</span>
                 </a>
-                <div id={ category.toLowerCase() } className="collapse pt-3">
+                <div id={ categoryName.toLowerCase() } className="collapse pt-3">
                     {
                         abilities.map((ability, i) =>
                             <UpgradeComponent
                                 key={ i }
                                 upgrade={ ability }
-                                upgradeBehavior={ upgradeBehavior }
-                                parentCallback={ pointsChanged } />
+                                upgradeBehavior={ Model.behavior }
+                                availablePoints={ availablePoints }
+                                value={ abilityValues[ability.name] }
+                                dispatch={ dispatch }
+                            />
                         )
                     }
                 </div>

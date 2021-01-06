@@ -1,11 +1,11 @@
 
-const LEVELS = Object.freeze({
+export const LEVELS = Object.freeze({
     NOVICE: 'Novice',
     ADEPT: 'Adept',
     MASTER: 'Master'
 });
 
-const SKILLS = Object.freeze({
+export const SKILLS = Object.freeze({
     AEROTHEURGE: 'Aerotheurge',
     EXPERT_MARKSMAN: 'Expert Marksman',
     GEOMANCER: 'Geomancer',
@@ -16,7 +16,7 @@ const SKILLS = Object.freeze({
     WITCHCRAFT: 'Witchcraft'
 });
 
-const levelStates = [
+export const masteryLevels = [
     {
         [LEVELS.NOVICE]: 0,
         [LEVELS.ADEPT]: 0,
@@ -49,17 +49,12 @@ const levelStates = [
     },
 ];
 
-const initialSkillsState = Object.values(SKILLS).reduce((obj, skill) => ({ ...obj, [skill]: 0 }), {});
+export const initialSkillsState = Object.values(SKILLS).reduce((obj, skill) => ({ ...obj, [skill]: 0 }), {});
 
 const defaultSkill = {
     name: 'Default skill',
     spells: [],
     disabled: false
-}
-
-const defaultSpell = {
-    selected: false,
-    disabled: false,
 }
 
 const skills = [
@@ -699,4 +694,3 @@ const SkillsModel = {
 };
 
 export default SkillsModel;
-export { LEVELS, SKILLS, levelStates, initialSkillsState };

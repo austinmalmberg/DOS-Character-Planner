@@ -1,31 +1,39 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useContext, memo } from 'react';
 
-import { AttributesContext } from './CharacterPlanner';
+import { allTalents } from '../models/Talents';
 
-export default function Talent({ talent, behavior }) {
-    const [state, setState] = useState(talent);
-    const Attributes = useContext(AttributesContext);
+import { TALENT_ACTIONS, LevelContext, AttributeContext, AbilityContext, TalentContext } from './CharacterPlanner';
 
-    useEffect(() => {
-        setState(state =>
-            state.prerequisites.every(fn => fn({ Attributes })) ?
-            behavior.onPrerequisitesMet(state) :
-            behavior.onPrerequisitesNotMet(state));
-    }, [Attributes]);
+function Talent({ name, dispatch }) {
+    const level = useContext(LevelContext);
+    const attributes = useContext(AttributeContext);
+    const abilities = useContext(AbilityContext);
+    const talents = useContext(TalentContext);
 
-    function toggleSelected() {
-        setState(state => behavior.toggleSelect(state));
+    const talentProperties = allTalents[name];
+
+    const isDisabled = !talentProperties.prerequisites
+        .every(prerequisite => prerequisite({ level, attributes, abilities, talents }));
+
+    function toggleSelect() {
+        dispatch({
+            type: TALENT_ACTIONS.TOGGLE,
+            payload: name
+        });
     }
 
     return (
-        <div className="form-check">
+        <div className="form-check" data-toggle="tooltip" data-placement="top" title={ talentProperties.description }>
             <input className="form-check-input"
                 type="checkbox"
-                id={ state.id }
-                disabled={ state.disabled }
-                checked={ state.selected }
-                onChange={ toggleSelected } />
-            <label className="form-check-label" htmlFor={ state.id }>{ state.name }</label>
+                id={ talentProperties.id }
+                disabled={ isDisabled }
+                checked={ talents.includes(name) }
+                onChange={ toggleSelect }
+            />
+            <label className="form-check-label" htmlFor={ talentProperties.id }>{ name }</label>
         </div>
     );
 }
+
+export default memo(Talent);

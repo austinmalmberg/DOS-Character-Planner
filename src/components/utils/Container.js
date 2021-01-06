@@ -1,8 +1,8 @@
 import React from 'react';
 
-function Container({ classNames, children }) {
+function Container({ classNames, style, children }) {
     return (
-        <div className={ ["p-3 border", classNames].join(' ').trim() }>
+        <div className={ ["p-3 border", classNames].join(' ').trim() } style={ style }>
             { children }
         </div>
     );
