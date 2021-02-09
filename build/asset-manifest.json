@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.js": "/static/js/main.a23e90e1.chunk.js",
+    "main.js.map": "/static/js/main.a23e90e1.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.3177960d.js",
+    "runtime-main.js.map": "/static/js/runtime-main.3177960d.js.map",
+    "static/js/2.f3c22e6f.chunk.js": "/static/js/2.f3c22e6f.chunk.js",
+    "static/js/2.f3c22e6f.chunk.js.map": "/static/js/2.f3c22e6f.chunk.js.map",
+    "static/js/3.ce5f94e5.chunk.js": "/static/js/3.ce5f94e5.chunk.js",
+    "static/js/3.ce5f94e5.chunk.js.map": "/static/js/3.ce5f94e5.chunk.js.map",
+    "index.html": "/index.html",
+    "static/js/2.f3c22e6f.chunk.js.LICENSE.txt": "/static/js/2.f3c22e6f.chunk.js.LICENSE.txt",
+    "static/media/dosee-logo.7384d6d2.png": "/static/media/dosee-logo.7384d6d2.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.3177960d.js",
+    "static/js/2.f3c22e6f.chunk.js",
+    "static/js/main.a23e90e1.chunk.js"
+  ]
+}

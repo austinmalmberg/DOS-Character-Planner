@@ -1,0 +1,25 @@
+
+img.spell {
+    /* transparent border around each spell so nothing moves during mouseovers */
+    border: 2px solid transparent;
+}
+
+img.spell[disabled] {
+    /* gray spell images when disabled */
+    filter: grayscale(100%);
+}
+
+img.spell.checked {
+    /* gold border when spell selected */
+    border: 2px solid var(--yellow);
+}
+
+div.spell--container:hover img.spell:not([disabled]) {
+    /* gray border during mouseover */
+    border: 2px solid var(--secondary);
+}
+
+div.spell--container:hover img.spell.checked:not([disabled]) {
+    /* priorize selected border over mouseover border */
+    border: 2px solid var(--yellow);
+}
